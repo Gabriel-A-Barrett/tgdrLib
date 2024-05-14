@@ -1,3 +1,5 @@
+package snpchip;
+
 import java.util.Scanner;
 import java.io.PrintWriter;
 import java.io.FileNotFoundException;
