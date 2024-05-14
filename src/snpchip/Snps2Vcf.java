@@ -1,4 +1,4 @@
-package snpchip;
+//package snpchip;
 
 import java.util.Scanner;
 import java.io.PrintWriter;
@@ -14,9 +14,9 @@ import java.util.Map;
 
 public class Snps2Vcf {
     public static void main(String[] args) {
-        String calls_file = "SNP_calls.csv";
-        String output_filename = "SnpChip.vcf";
-        String manifest_file = "manifest_chip34K.csv";
+        String calls_file = args[0];
+        String output_filename = args[1];
+        String manifest_file = args[2];
         StringBuilder headerContent = new StringBuilder();
         int row = 0;
         int samples = 0;
@@ -31,6 +31,7 @@ public class Snps2Vcf {
         HashSet<String> contigs = new HashSet<>();
        
         boolean isFirstLine = true; // Flag to skip the header
+        // Read manifest 
         try (Scanner manifestScanner = new Scanner(new java.io.File(manifest_file))) {
             while (manifestScanner.hasNextLine()) {
                 String manifestLine = manifestScanner.nextLine();
@@ -46,8 +47,12 @@ public class Snps2Vcf {
                     String strand = manifestColumns[2].trim();
                     String illuminaId = manifestColumns[0].trim();
                     String orientation = illuminaId.split("_")[4];
+                    
+                    System.out.println(orientation + " " + strand);
+                    
                     char refAllele = 'A';
                     char snpAllele = 'A';
+                    // Top & Bottom is used by illumina to designate strand based on variant and surrounding sequence
                     if ("TOP".equals(strand)) {
                         snpAllele = manifestColumns[3].charAt(1);
                     } else if ("BOT".equals(strand)) {
