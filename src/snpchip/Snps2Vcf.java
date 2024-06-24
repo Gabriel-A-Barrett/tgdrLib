@@ -1,4 +1,4 @@
-//package snpchip;
+package snpchip;
 
 import java.util.Scanner;
 import java.io.PrintWriter;
@@ -13,10 +13,8 @@ import java.util.HashSet;
 import java.util.Map;
 
 public class Snps2Vcf {
-    public static void main(String[] args) {
-        String calls_file = args[0];
-        String output_filename = args[1];
-        String manifest_file = args[2];
+
+    public static void convert(String callsFile, String outputFilename, String manifestFile) {
         StringBuilder headerContent = new StringBuilder();
         int row = 0;
         int samples = 0;
@@ -32,7 +30,7 @@ public class Snps2Vcf {
        
         boolean isFirstLine = true; // Flag to skip the header
         // Read manifest 
-        try (Scanner manifestScanner = new Scanner(new java.io.File(manifest_file))) {
+        try (Scanner manifestScanner = new Scanner(new java.io.File(manifestFile))) {
             while (manifestScanner.hasNextLine()) {
                 String manifestLine = manifestScanner.nextLine();
                 String[] manifestColumns = manifestLine.split(",");
@@ -41,18 +39,16 @@ public class Snps2Vcf {
                     // Skip the first line if it's the header
                     if (isFirstLine) {
                         isFirstLine = false;
-                    continue;
-                        }
+                        continue;
+                    }
                     String chromPos = manifestColumns[1].trim();
                     String strand = manifestColumns[2].trim();
                     String illuminaId = manifestColumns[0].trim();
                     String orientation = illuminaId.split("_")[4];
-                    
-                    System.out.println(orientation + " " + strand);
-                    
+                                        
                     char refAllele = 'A';
                     char snpAllele = 'A';
-                    // Top & Bottom is used by illumina to designate strand based on variant and surrounding sequence
+                    // Top & Bottom is used by Illumina to designate strand based on variant and surrounding sequence
                     if ("TOP".equals(strand)) {
                         snpAllele = manifestColumns[3].charAt(1);
                     } else if ("BOT".equals(strand)) {
@@ -81,21 +77,20 @@ public class Snps2Vcf {
                     contigs.add(chromPos.split("_")[0] + "_" + chromPos.split("_")[1]);
                 }
             }
-            //System.out.println(refAlleleMap);
         } catch (FileNotFoundException e) {
             System.out.println("Manifest file not found.");
             e.printStackTrace();
             return; // Exit the program if manifest file is not found
         }
 
-        try (Scanner sc = new Scanner(new java.io.File(calls_file));
-             PrintWriter writer = new PrintWriter(output_filename)) {
+        try (Scanner sc = new Scanner(new java.io.File(callsFile));
+             PrintWriter writer = new PrintWriter(outputFilename)) {
 
             // Write VCF header
             writer.println("##fileformat=VCFv4.2");
             writer.println("##fileDate=" + formattedDate);
             writer.println("##source=Snps2VcfV0");
-            writer.println("##reference=Potr/v4.2");
+            writer.println("##reference=Potr/v2.0");
             for (String contig : contigs) {
                 writer.println("##contig=<ID=" + contig + ">");
             }
@@ -187,8 +182,6 @@ public class Snps2Vcf {
                         .collect(Collectors.joining("\t"));
                                         
                     writer.println(chrom + "\t" + pos + "\t" + columns[0] + "\t" + ref + "\t" + alt + "\t" + qual + "\t" + filter + "\t" + info + "\t" + format + "\t" + genotypes);
-
-                    // outside of individual genotypes
                 }
                 row++;
             }
@@ -199,6 +192,5 @@ public class Snps2Vcf {
             System.out.println("An error occurred.");
             e.printStackTrace();
         } 
-
     }
 }
