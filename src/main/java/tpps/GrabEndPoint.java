@@ -35,6 +35,7 @@ public final class GrabEndPoint {
             // for every organism extract items in json
             // [code:,ref:]
             result = extractItemsPerOrganismFromJson(baos, items);
+            
             // Collect updates to apply after the loop
             Map<String, Map<String, String>> updates = new HashMap<>();
             
@@ -52,7 +53,7 @@ public final class GrabEndPoint {
 
                 }
             }
-            // Apply updates
+            // Apply updates to result
             for (Map.Entry<String, Map<String, String>> update : updates.entrySet()) {
                 result.put(update.getKey(), update.getValue());
             }
@@ -72,24 +73,6 @@ public final class GrabEndPoint {
         URL submissionUrl = new URL(url);
         ByteArrayOutputStream baos = downloadUrl(submissionUrl);
 
-        return baos;
-    }
-
-
-    public static ByteArrayOutputStream fetchTreeGenesApiFilePerOrganism(String tgdr, String token, String code) throws IOException {
-        String submissionUrlString = "https://treegenesdb.org/api/file/" + code + "/info?token=" + token;
-        URL submissionUrl = new URL(submissionUrlString);
-        ByteArrayOutputStream baos = downloadUrl(submissionUrl);
-        
-        return baos;
-    }
-
-
-    private static ByteArrayOutputStream fetchTreeGenesApiSubmissionVcf(String tgdr, String token) throws IOException {
-        String submissionUrlString = "https://treegenesdb.org/api/submission/" + tgdr + "/vcf?token=" + token;
-        URL submissionUrl = new URL(submissionUrlString);
-        ByteArrayOutputStream baos = downloadUrl(submissionUrl);
-        
         return baos;
     }
 
