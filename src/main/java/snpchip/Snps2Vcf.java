@@ -16,8 +16,8 @@ public class Snps2Vcf {
 
     public static void convert(String callsFile, String outputFilename, String manifestFile) {
         StringBuilder headerContent = new StringBuilder();
-        int row = 0;
-        int samples = 0;
+        int row = 0; // init. sum records
+        int samples = 0; // init. sum samples
 
         // Get the current date in the format yyyyMMdd
         LocalDate currentDate = LocalDate.now();
