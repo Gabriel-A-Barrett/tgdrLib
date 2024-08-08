@@ -11,7 +11,7 @@ public class ManifestDemo {
     public static void run() {
         System.out.println ("Running: " + ManifestDemo.class.getName());
         
-        String filename = "../../test/resources/output/output.fasta";
+        String filename = "../../test/resources/output/output.fasta"; // this way it gets defined with NextFlow
 
         try {
             File manifestFile = new File("../../test/resources/manifest_chip34K.csv");
